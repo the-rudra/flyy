@@ -9,11 +9,12 @@ import {
 import { Background } from "./Background";
 import { Airplane } from "./Airplane";
 import { Cloud } from "./Cloud";
-import { useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Vintage_Airplane } from "./Vintage_airplane";
 import { TextSection } from "./TextSection";
+import { gsap } from "gsap";
 
 const LINE_NB_POINTS = 2000;
 const CURVE_DISTANCE = 80;
@@ -147,6 +148,7 @@ export const Experience = () => {
         lerpedScrollOffset = Math.max(lerpedScrollOffset, 0);
 
         lastScroll.current = lerpedScrollOffset;
+        tl.current.seek(lerpedScrollOffset * tl.current.duration());
 
         const currPoint = curve.getPoint(lerpedScrollOffset);
 
@@ -212,12 +214,38 @@ export const Experience = () => {
     });
     const airplane = useRef();
 
+    const tl = useRef();
+
+    //changing background colors using gsap timeline
+    const backgroundColors = useRef({ colorA: "#357ca1", colorB: "white" });
+    useLayoutEffect(() => {
+        tl.current = gsap.timeline();
+
+        tl.current.to(backgroundColors.current, {
+            duration: 1,
+            colorA: "#5C4B99",
+            colorB: "#FFDBC3",
+        });
+        tl.current.to(backgroundColors.current, {
+            duration: 1,
+            colorA: "#F31559",
+            colorB: "#F5F5F5",
+        });
+        tl.current.to(backgroundColors.current, {
+            duration: 1,
+            colorA: "#FBA1B7",
+            colorB: "#FFDBAA",
+        });
+
+        tl.current.pause();
+    }, []);
+
     return (
         <>
             <directionalLight intensity={0.1} position={[0, 3, 1]} />
             {/* <OrbitControls enableZoom={false} /> */}
             <group ref={cameraGroup}>
-                <Background />
+                <Background backgroundColors={backgroundColors} />
                 <group ref={cameraRail}>
                     <PerspectiveCamera
                         position={[0, 0.4, 5]}
