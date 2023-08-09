@@ -72,12 +72,12 @@ export const Experience = () => {
                 cameraRailDist: -1,
                 position: new THREE.Vector3(
                     curvePoints[2].x - 3,
-                    curvePoints[2].y,
+                    curvePoints[2].y + 1.5,
                     curvePoints[2].z
                 ),
-                title: "What is Molog",
+                title: "Who Am I?",
                 subtitle:
-                    "\nWe offer the unique blend of 'the power of design' and technology to build digital & everlasting experiences.",
+                    "\nI'm a Web Developer, passionate in Front End Web Development. I have experience in HTML, CSS, JS, ReactJS, Redux and so on...\nCurrently learning threeJs and react-three-fiber because I have fallen in love with the things you can do within web browsers! The three dimensional websites created by using these libraries are truly amazing experiences.",
             },
             {
                 cameraRailDist: 1,
@@ -86,9 +86,9 @@ export const Experience = () => {
                     curvePoints[3].y + 1,
                     curvePoints[3].z
                 ),
-                title: "About Us",
+                title: "Hobbies",
                 subtitle:
-                    "\nWe are a team of conceptual designers, curious problem solvers, and passionate collaborators focused on the belief that great ideas come about when strategy and creativity work together. ",
+                    "\nI am kind of a nerd. I have been gaming since an early age and I'm very invested in Esports.\nI have decent experience in most FPS esports and I am pretty skilled at the popular video game, Valorant. :)",
             },
             {
                 cameraRailDist: -1,
@@ -97,9 +97,9 @@ export const Experience = () => {
                     curvePoints[4].y + 2,
                     curvePoints[4].z
                 ),
-                title: "Our Philosophy",
+                title: "My Goals",
                 subtitle:
-                    "\nWe know that Strategy can't stand alone. Creative needs a companion.\n\nThat's why, at MoLog, we bring them together. Strategy and creative. Science and emotion. One and the same. Through this convergence, brands across all industries can stir emotions and inspire action. No matter who they target. Driving sales and generating revenue.\n\nAt MoLog, we speak to the heart, and the mind follows.",
+                    "\nLearn a lot more of react-three-fiber to create more amazing three dimensional websites!\nAnd also become the god gamer.",
             },
         ];
     }, []);
@@ -474,7 +474,7 @@ export const Experience = () => {
                 </group>
             </group>
             {/* TEXT */}
-            <group position={[-2, 0.1, -2]}>
+            <group position={[-2, 0.7, -2]}>
                 <Text
                     color={"white"}
                     anchorX={"left"}
@@ -483,8 +483,8 @@ export const Experience = () => {
                     maxWidth={2}
                     font={"./fonts/PlayfairDisplay-Bold.ttf"}
                 >
-                    Welcome to Molog!{"\n"}
-                    Come with us on this journey to explore our universe!
+                    Welcome to My Website!{"\n\n"}
+                    Come with me on this journey to explore my universe!
                 </Text>
             </group>
             {textSections.map((textSection, index) => (
