@@ -15,6 +15,7 @@ import { useFrame } from "@react-three/fiber";
 import { Vintage_Airplane } from "./Vintage_airplane";
 import { TextSection } from "./TextSection";
 import { gsap } from "gsap";
+import { fadeOnBeforeCompile } from "../utils/fadeMaterial";
 
 const LINE_NB_POINTS = 2000;
 const CURVE_DISTANCE = 80;
@@ -27,6 +28,7 @@ export const Experience = () => {
     const curvePoints = useMemo(
         () => [
             new THREE.Vector3(0, 0, 0),
+
             new THREE.Vector3(5, 0, -1 * CURVE_DISTANCE),
             new THREE.Vector3(-20, 0, -3 * CURVE_DISTANCE),
             new THREE.Vector3(0, 0, -4 * CURVE_DISTANCE),
@@ -101,6 +103,205 @@ export const Experience = () => {
             },
         ];
     }, []);
+
+    const clouds = useMemo(
+        () => [
+            {
+                position: new THREE.Vector3(-3.5, -2, -10),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+            },
+            {
+                position: new THREE.Vector3(9, -4, -20),
+                scale: new THREE.Vector3(0.5, 0.5, 0.5),
+            },
+            {
+                position: new THREE.Vector3(-9, 6, -30),
+                scale: new THREE.Vector3(1, 1, 1),
+            },
+            {
+                position: new THREE.Vector3(1, 2, -40),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(-5, 1, -55),
+            },
+            {
+                position: new THREE.Vector3(8, 2, -60),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(-8, 3, -75),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x - 9,
+                    curvePoints[2].y,
+                    curvePoints[2].z
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x + 8,
+                    curvePoints[2].y - 3,
+                    curvePoints[2].z + 12
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x + 3,
+                    curvePoints[2].y + 2,
+                    curvePoints[2].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x - 9,
+                    curvePoints[2].y,
+                    curvePoints[2].z - 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x - 5,
+                    curvePoints[2].y - 3,
+                    curvePoints[2].z + 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[2].x + 3,
+                    curvePoints[2].y + 2,
+                    curvePoints[2].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x - 9,
+                    curvePoints[3].y,
+                    curvePoints[3].z
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x + 8,
+                    curvePoints[3].y - 3,
+                    curvePoints[3].z + 12
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x + 3,
+                    curvePoints[3].y + 2,
+                    curvePoints[3].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x - 9,
+                    curvePoints[3].y,
+                    curvePoints[3].z - 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x - 5,
+                    curvePoints[3].y - 3,
+                    curvePoints[3].z + 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[3].x + 3,
+                    curvePoints[3].y + 2,
+                    curvePoints[3].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x - 9,
+                    curvePoints[4].y,
+                    curvePoints[4].z
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x + 8,
+                    curvePoints[4].y - 3,
+                    curvePoints[4].z + 12
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x + 3,
+                    curvePoints[4].y + 2,
+                    curvePoints[4].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x - 9,
+                    curvePoints[4].y,
+                    curvePoints[4].z - 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x - 5,
+                    curvePoints[4].y - 3,
+                    curvePoints[4].z + 22
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+            {
+                position: new THREE.Vector3(
+                    curvePoints[4].x + 3,
+                    curvePoints[4].y + 2,
+                    curvePoints[4].z - 6
+                ),
+                scale: new THREE.Vector3(0.8, 0.8, 0.8),
+                rotation: new THREE.Euler(0, 0, 0),
+            },
+        ],
+
+        []
+    );
 
     useFrame((_state, delta) => {
         const scrollOffset = Math.max(0, scroll.offset);
@@ -315,63 +516,14 @@ export const Experience = () => {
                         opacity={0.7}
                         transparent
                         envMapIntensity={2}
+                        onBeforeCompile={fadeOnBeforeCompile}
                     />
                 </mesh>
             </group>
-            <group>
-                <Cloud
-                    opacity={0.5}
-                    scale={[0.2, 0.3, 0.4]}
-                    position={[1.5, -0.5, -2]}
-                />
-                <Cloud
-                    opacity={0.5}
-                    scale={[0.3, 0.3, 0.3]}
-                    position={[-2, 1, -3]}
-                />
-                <Cloud
-                    opacity={0.7}
-                    scale={[0.3, 0.3, 0.4]}
-                    position={[20, -0.2, -2]}
-                    rotation-y={Math.PI / 9}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.4, 0.4, 0.4]}
-                    position={[6, -0.2, -12]}
-                    rotation-y={Math.PI / 9}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.4, 0.4, 0.4]}
-                    position={[9, -0.2, -28]}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.8, 0.8, 0.8]}
-                    position={[-12, -1, -32]}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.4, 0.4, 0.4]}
-                    position={[6, 5, -48]}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.5, 0.5, 0.4]}
-                    position={[1, -4, -42]}
-                />
-                <Cloud
-                    opacity={0.5}
-                    scale={[0.4, 0.4, 0.4]}
-                    position={[-3, -1, -50]}
-                />
-                <Cloud
-                    opacity={0.4}
-                    scale={[0.9, 0.9, 0.9]}
-                    position={[-5, 3, -54]}
-                />
-            </group>
+            {/* CLOUDS */}
+            {clouds.map((clouds, index) => (
+                <Cloud {...clouds} key={index} />
+            ))}
         </>
     );
 };
