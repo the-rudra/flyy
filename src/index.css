@@ -1,8 +1,21 @@
 #root {
-  width: 100vw;
-  height: 100vh;
+    width: 100vw;
+    height: 100vh;
 }
 
 body {
-  margin: 0;
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #6c6c6c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: white;
+    height: 10%;
 }
