@@ -15,9 +15,9 @@ export function Cloud({ opacity, ...props }) {
                 material={materials["lambert2SG.001"]}
             >
                 <meshStandardMaterial
-                    {...materials["lambert2SG.001"]}
                     transparent
                     opacity={opacity}
+                    envMapIntensity={2}
                 />
             </mesh>
         </group>

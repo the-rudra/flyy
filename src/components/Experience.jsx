@@ -13,26 +13,33 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Vintage_Airplane } from "./Vintage_airplane";
+import { TextSection } from "./TextSection";
 
-const LINE_NB_POINTS = 8000;
+const LINE_NB_POINTS = 2000;
 const CURVE_DISTANCE = 100;
 const CURVE_AHEAD_CAMERA = 0.008;
 const CURVE_AHEAD_AIRPLANE = 0.02;
 const AIRPLANE_MAX_ANGLE = 35;
+const FRICTION_DISTANCE = 42;
 
 export const Experience = () => {
+    const curvePoints = useMemo(
+        () => [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(5, 0, -1 * CURVE_DISTANCE),
+            new THREE.Vector3(-20, 0, -3 * CURVE_DISTANCE),
+            new THREE.Vector3(0, 0, -4 * CURVE_DISTANCE),
+            new THREE.Vector3(2, 0, -5 * CURVE_DISTANCE),
+            new THREE.Vector3(20, 0, -6 * CURVE_DISTANCE),
+            new THREE.Vector3(5, 0, -7 * CURVE_DISTANCE),
+            new THREE.Vector3(0, 0, -8 * CURVE_DISTANCE),
+        ],
+        []
+    );
+
     const curve = useMemo(() => {
         return new THREE.CatmullRomCurve3(
-            [
-                new THREE.Vector3(0, 0, 0),
-                new THREE.Vector3(5, 0, -1 * CURVE_DISTANCE),
-                new THREE.Vector3(-20, 0, -3 * CURVE_DISTANCE),
-                new THREE.Vector3(0, 0, -4 * CURVE_DISTANCE),
-                new THREE.Vector3(2, 0, -5 * CURVE_DISTANCE),
-                new THREE.Vector3(20, 0, -6 * CURVE_DISTANCE),
-                new THREE.Vector3(5, 0, -7 * CURVE_DISTANCE),
-                new THREE.Vector3(0, 0, -8 * CURVE_DISTANCE),
-            ],
+            curvePoints,
             false,
             "catmullrom",
             0.5
@@ -45,17 +52,81 @@ export const Experience = () => {
 
     const shape = useMemo(() => {
         const shape = new THREE.Shape();
-        shape.moveTo(0, -0.2);
-        shape.lineTo(0, 0.2);
+        shape.moveTo(0, -0.1);
+        shape.lineTo(0, 0.1);
 
         return shape;
     }, [curve]);
 
     const cameraGroup = useRef();
+    const cameraRail = useRef();
     const scroll = useScroll();
+
+    const textSections = useMemo(() => {
+        return [
+            {
+                cameraRailDist: -1,
+                position: new THREE.Vector3(
+                    curvePoints[2].x - 3,
+                    curvePoints[2].y,
+                    curvePoints[2].z
+                ),
+                title: "What is Molog",
+                subtitle:
+                    "\nWe offer the unique blend of 'the power of design' and technology to build digital & everlasting experiences.",
+            },
+            {
+                cameraRailDist: 1,
+                position: new THREE.Vector3(
+                    curvePoints[3].x + 1.5,
+                    curvePoints[3].y + 1,
+                    curvePoints[3].z
+                ),
+                title: "About Us",
+                subtitle:
+                    "\nWe are a team of conceptual designers, curious problem solvers, and passionate collaborators focused on the belief that great ideas come about when strategy and creativity work together. ",
+            },
+            {
+                cameraRailDist: -1,
+                position: new THREE.Vector3(
+                    curvePoints[4].x - 4,
+                    curvePoints[4].y + 2,
+                    curvePoints[4].z
+                ),
+                title: "Our Philosophy",
+                subtitle:
+                    "\nWe know that Strategy can't stand alone. Creative needs a companion.\n\nThat's why, at MoLog, we bring them together. Strategy and creative. Science and emotion. One and the same. Through this convergence, brands across all industries can stir emotions and inspire action. No matter who they target. Driving sales and generating revenue.\n\nAt MoLog, we speak to the heart, and the mind follows.",
+            },
+        ];
+    }, []);
 
     useFrame((_state, delta) => {
         const scrollOffset = Math.max(0, scroll.offset);
+
+        //pan camera close to texts
+        let resetCameraRail = true;
+        textSections.forEach((textSection) => {
+            const distance = textSection.position.distanceTo(
+                cameraGroup.current.position
+            );
+            if (distance < FRICTION_DISTANCE) {
+                const targetCameraRailPosition = new THREE.Vector3(
+                    (1 - distance / FRICTION_DISTANCE) *
+                        textSection.cameraRailDist,
+                    0,
+                    0
+                );
+                cameraRail.current.position.lerp(
+                    targetCameraRailPosition,
+                    delta
+                );
+                resetCameraRail = false;
+            }
+        });
+        if (resetCameraRail) {
+            const targetCameraRailPosition = new THREE.Vector3(0, 0, 0);
+            cameraRail.current.position.lerp(targetCameraRailPosition, delta);
+        }
 
         const currPointIndex = Math.min(
             Math.round(scroll.offset * linePoints.length),
@@ -63,7 +134,7 @@ export const Experience = () => {
         );
         const currPoint = curve.getPoint(scrollOffset);
 
-        //follow the group points
+        //follow the curve points
         cameraGroup.current.position.lerp(currPoint, delta * 24);
 
         //to rotate the perspective camera
@@ -125,14 +196,17 @@ export const Experience = () => {
 
     return (
         <>
+            <directionalLight intensity={0.1} position={[0, 3, 1]} />
             {/* <OrbitControls enableZoom={false} /> */}
-            <Background />
             <group ref={cameraGroup}>
-                <PerspectiveCamera
-                    position={[0, 0.4, 5]}
-                    fov={30}
-                    makeDefault
-                />
+                <Background />
+                <group ref={cameraRail}>
+                    <PerspectiveCamera
+                        position={[0, 0.4, 5]}
+                        fov={30}
+                        makeDefault
+                    />
+                </group>
                 <group ref={airplane}>
                     <Float
                         floatIntensity={1}
@@ -153,44 +227,22 @@ export const Experience = () => {
                 </group>
             </group>
             {/* TEXT */}
-            <group position={[-3, -0.5, -2]}>
+            <group position={[-2, 0.1, -2]}>
                 <Text
                     color={"white"}
                     anchorX={"left"}
                     anchorY={"middle"}
                     fontSize={0.15}
                     maxWidth={2}
-                    font={"./fonts/Urbanist-Regular.ttf"}
+                    font={"./fonts/PlayfairDisplay-Bold.ttf"}
                 >
                     Welcome to Molog!{"\n"}
                     Come with us on this journey to explore our universe!
                 </Text>
             </group>
-            <group position={[2, 0.75, -12]}>
-                <Text
-                    color={"white"}
-                    anchorX={"left"}
-                    anchorY={"bottom"}
-                    fontSize={0.15}
-                    maxWidth={2}
-                    font={"./fonts/Urbanist-Bold.ttf"}
-                >
-                    Our Services
-                </Text>
-                <Text
-                    color={"white"}
-                    anchorX={"left"}
-                    anchorY={"top"}
-                    fontSize={0.15}
-                    maxWidth={2}
-                    font={"./fonts/Urbanist-Regular.ttf"}
-                >
-                    Advertising{"\n"}
-                    Design{"\n"}
-                    Technology{"\n"}
-                    Web Development{"\n"}
-                </Text>
-            </group>
+            {textSections.map((textSection, index) => (
+                <TextSection {...textSection} key={index} />
+            ))}
 
             {/* LINE */}
             <group position-y={-2}>
@@ -216,6 +268,7 @@ export const Experience = () => {
                         color={"white"}
                         opacity={0.7}
                         transparent
+                        envMapIntensity={2}
                     />
                 </mesh>
             </group>
