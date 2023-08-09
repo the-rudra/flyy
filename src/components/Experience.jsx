@@ -16,7 +16,7 @@ import { Vintage_Airplane } from "./Vintage_airplane";
 import { TextSection } from "./TextSection";
 
 const LINE_NB_POINTS = 2000;
-const CURVE_DISTANCE = 100;
+const CURVE_DISTANCE = 80;
 const CURVE_AHEAD_CAMERA = 0.008;
 const CURVE_AHEAD_AIRPLANE = 0.02;
 const AIRPLANE_MAX_ANGLE = 35;
@@ -61,6 +61,7 @@ export const Experience = () => {
     const cameraGroup = useRef();
     const cameraRail = useRef();
     const scroll = useScroll();
+    const lastScroll = useRef(0);
 
     const textSections = useMemo(() => {
         return [
@@ -103,6 +104,7 @@ export const Experience = () => {
     useFrame((_state, delta) => {
         const scrollOffset = Math.max(0, scroll.offset);
 
+        let friction = 1;
         //pan camera close to texts
         let resetCameraRail = true;
         textSections.forEach((textSection) => {
@@ -110,6 +112,7 @@ export const Experience = () => {
                 cameraGroup.current.position
             );
             if (distance < FRICTION_DISTANCE) {
+                friction = Math.max(distance / FRICTION_DISTANCE, 0.1);
                 const targetCameraRailPosition = new THREE.Vector3(
                     (1 - distance / FRICTION_DISTANCE) *
                         textSection.cameraRailDist,
@@ -132,14 +135,27 @@ export const Experience = () => {
             Math.round(scroll.offset * linePoints.length),
             linePoints.length - 1
         );
-        const currPoint = curve.getPoint(scrollOffset);
+
+        //slow scroll effect
+        let lerpedScrollOffset = THREE.MathUtils.lerp(
+            lastScroll.current,
+            scrollOffset,
+            delta * friction
+        );
+        //prevent going below zero and above one
+        lerpedScrollOffset = Math.min(lerpedScrollOffset, 1);
+        lerpedScrollOffset = Math.max(lerpedScrollOffset, 0);
+
+        lastScroll.current = lerpedScrollOffset;
+
+        const currPoint = curve.getPoint(lerpedScrollOffset);
 
         //follow the curve points
         cameraGroup.current.position.lerp(currPoint, delta * 24);
 
         //to rotate the perspective camera
         const lookAtPoint = curve.getPoint(
-            Math.min(scrollOffset + CURVE_AHEAD_CAMERA, 1)
+            Math.min(lerpedScrollOffset + CURVE_AHEAD_CAMERA, 1)
         );
 
         const currentLookAt = cameraGroup.current.getWorldDirection(
@@ -155,7 +171,9 @@ export const Experience = () => {
         );
 
         //airplane rotation
-        const tangent = curve.getTangent(scrollOffset + CURVE_AHEAD_AIRPLANE);
+        const tangent = curve.getTangent(
+            lerpedScrollOffset + CURVE_AHEAD_AIRPLANE
+        );
         //calculate this to avoid rotation being affected by the smooth effect
         const nonLerpLookAt = new THREE.Group();
         nonLerpLookAt.position.copy(currPoint);
